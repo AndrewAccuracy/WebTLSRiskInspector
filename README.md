@@ -1,49 +1,66 @@
 # WebTLS Risk Inspector
 
-WebTLS Risk Inspector is a lightweight Python project for detecting local Web exposure risks, HTTP security configuration defects, and TLS certificate trust issues. It is designed as a transparent security risk programming project: the scanner does not depend on third-party security products, and the core logic is implemented with the Python standard library.
+**WebTLS Risk Inspector** 是一个面向本地 Web 服务安全配置与 TLS 证书可信性风险的轻量级检测项目。项目使用 Python 标准库实现端口探测、HTTP/HTTPS 协议访问、风险规则判断、综合评分和报告生成，重点体现“风险可见、风险可测、风险可解释”的设计思路。
 
-The project focuses on making common security configuration risks visible, measurable, and explainable. It scans selected ports, identifies basic Web service risks, checks HTTP security headers, detects directory indexing exposure, classifies Server header leakage, verifies HTTPS certificate trust, and generates both JSON and Markdown reports.
+本项目不依赖第三方安全扫描产品，核心检测逻辑均可直接阅读和复现，适合作为网络信息安全风险技术编程、基础安全巡检原型和 Web 配置风险分析的实验材料。
 
-## Features
+## 项目图示
 
-- TCP port exposure detection for selected local or remote hosts
-- HTTP security header checks, including HSTS, CSP, X-Frame-Options, X-Content-Type-Options, and Referrer-Policy
-- Directory indexing exposure detection based on response body evidence
-- Server version information leakage detection
-- HTTPS certificate trust verification for self-signed or untrusted certificates
-- Basic TLS protocol and cipher suite observation
-- Rule-based risk scoring and severity classification
-- Structured JSON output and readable Markdown report generation
-- Reproducible local vulnerable HTTP/HTTPS demo environment
+### 系统架构
 
-## Project Structure
+<img src="figures/architecture.png" alt="系统架构图" width="760">
+
+### 检测流程
+
+<img src="figures/workflow.png" alt="检测流程图" width="520">
+
+### 风险结果示例
+
+<img src="figures/risk_chart.png" alt="风险评分结果图" width="760">
+
+### 演示站点截图
+
+<img src="figures/demo_site_screenshot.png" alt="弱安全配置演示站点截图" width="760">
+
+## 功能特点
+
+- 对指定主机和端口执行 TCP 开放状态检测
+- 识别常见 Web 暴露面风险，如测试端口开放、目录索引暴露、Server 版本信息泄露
+- 检测常见 HTTP 安全响应头缺失问题，包括 HSTS、CSP、X-Frame-Options、X-Content-Type-Options、Referrer-Policy
+- 对 HTTPS 服务进行证书可信性检查，可识别自签名证书或不受信任证书
+- 观察 TLS 协议版本和密码套件等基础传输层安全信息
+- 基于规则对风险项进行评分，并输出整体风险等级
+- 同时生成 JSON 结构化结果和 Markdown 风险报告
+- 提供本地弱安全配置 HTTP/HTTPS 演示环境，便于复现实验
+
+## 目录结构
 
 ```text
 .
-├── risk_scanner.py              # Main risk scanning program
-├── demo_vulnerable_server.py    # Local vulnerable HTTP/HTTPS demo service
-├── demo_site/                   # Demo Web root with intentionally exposed files
-├── demo_certs/                  # Local self-signed certificate directory
-├── results/                     # Reproducible experiment outputs
+├── risk_scanner.py              # 主扫描程序
+├── demo_vulnerable_server.py    # 本地弱安全配置 HTTP/HTTPS 演示服务
+├── demo_site/                   # 演示站点目录，包含模拟暴露的文件和配置
+├── demo_certs/                  # 本地自签名证书目录，证书文件需本地生成
+├── results/                     # 四组实验输出结果
 │   ├── exp1/
 │   ├── exp2/
 │   ├── exp3/
 │   └── exp4/
-├── figures/                     # Figures used by the research report
-├── report.tex                   # LaTeX source of the full report
-└── report.pdf                   # Compiled research report
+├── figures/                     # README 与论文使用的图示材料
+├── report.tex                   # 论文 LaTeX 源文件
+└── report.pdf                   # 已编译的完整论文报告
 ```
 
-## Requirements
+## 运行环境
 
-- Python 3.10 or later
-- No third-party Python packages are required
-- OpenSSL is only needed if you want to regenerate the self-signed demo certificate
-- XeLaTeX or a compatible TeX distribution is only needed if you want to rebuild `report.pdf`
+- Python 3.10 或更高版本
+- 扫描程序仅使用 Python 标准库，无需安装第三方 Python 依赖
+- 如需运行 HTTPS 自签名证书实验，需要本机安装 OpenSSL
+- 如需重新编译论文 PDF，需要 XeLaTeX 或兼容的 TeX 发行版
 
-## Quick Start
+## 快速开始
 
-Generate the local self-signed certificate before starting the HTTPS demo:
+首次运行 HTTPS 演示服务前，需要生成本地自签名证书。证书文件包含私钥，已被 `.gitignore` 排除，不会上传到仓库。
 
 ```bash
 openssl req -x509 -newkey rsa:2048 -nodes -days 825 \
@@ -52,91 +69,61 @@ openssl req -x509 -newkey rsa:2048 -nodes -days 825 \
   -addext "subjectAltName=IP:127.0.0.1"
 ```
 
-Start the intentionally weak demo service:
+启动本地弱安全配置演示服务：
 
 ```bash
 python3 demo_vulnerable_server.py
 ```
 
-The demo service listens on:
+服务启动后会监听两个端口：
 
-- `http://127.0.0.1:8080` for weak HTTP configuration
-- `https://127.0.0.1:8443` for self-signed HTTPS certificate testing
+- `http://127.0.0.1:8080`：弱安全配置 HTTP 服务
+- `https://127.0.0.1:8443`：使用自签名证书的 HTTPS 服务
 
-In another terminal, run the scanner:
+在另一个终端执行扫描：
 
 ```bash
 python3 risk_scanner.py --host 127.0.0.1 --ports 80,443,8080,8443 --output-dir results/exp4
 ```
 
-After the scan finishes, check the generated report:
+查看生成的 Markdown 风险报告：
 
 ```bash
 cat results/exp4/scan_report.md
 ```
 
-## Reproduce the Experiments
+## 实验复现
 
-Experiment 1 scans the basic local Web exposure scenario. Keep the demo service running and execute:
+每组实验都会输出两类文件：
 
-```bash
-python3 risk_scanner.py --host 127.0.0.1 --ports 80,443,8080 --output-dir results/exp1
-```
+- `scan_result.json`：完整结构化扫描结果
+- `scan_report.md`：适合直接阅读的风险报告
 
-Experiment 2 expands the port range to observe how additional exposed services influence the risk score:
+| 实验 | 场景 | 运行条件 | 命令 |
+| --- | --- | --- | --- |
+| 实验一 | 基础端口与 HTTP 风险检测 | 启动演示服务 | `python3 risk_scanner.py --host 127.0.0.1 --ports 80,443,8080 --output-dir results/exp1` |
+| 实验二 | 扩大端口范围扫描 | 启动演示服务 | `python3 risk_scanner.py --host 127.0.0.1 --ports 21,22,23,80,443,3306,6379,8080 --output-dir results/exp2` |
+| 实验三 | 无演示服务基线扫描 | 停止演示服务 | `python3 risk_scanner.py --host 127.0.0.1 --ports 80,443,8080 --output-dir results/exp3` |
+| 实验四 | HTTPS 自签名证书检测 | 启动演示服务并生成证书 | `python3 risk_scanner.py --host 127.0.0.1 --ports 80,443,8080,8443 --output-dir results/exp4` |
 
-```bash
-python3 risk_scanner.py --host 127.0.0.1 --ports 21,22,23,80,443,3306,6379,8080 --output-dir results/exp2
-```
+当前已复现结果如下：
 
-Experiment 3 is a baseline scan without the demo service. Stop `demo_vulnerable_server.py` first, then execute:
-
-```bash
-python3 risk_scanner.py --host 127.0.0.1 --ports 80,443,8080 --output-dir results/exp3
-```
-
-Experiment 4 verifies the HTTPS self-signed certificate detection logic. Start the demo service again and execute:
-
-```bash
-python3 risk_scanner.py --host 127.0.0.1 --ports 80,443,8080,8443 --output-dir results/exp4
-```
-
-## Experiment Results
-
-Each experiment directory contains:
-
-- `scan_result.json`: complete structured scan result
-- `scan_report.md`: human-readable risk report
-
-Current reproduced results:
-
-| Experiment | Scenario | Score | Level |
+| 实验 | 主要风险 | 综合评分 | 风险等级 |
 | --- | --- | ---: | --- |
-| `exp1` | Basic scan with weak HTTP demo service | 76 | Medium |
-| `exp2` | Expanded port range scan | 81 | High |
-| `exp3` | Baseline scan without demo service | 0 | Low |
-| `exp4` | HTTP risks plus self-signed HTTPS certificate | 88 | High |
+| `exp1` | 8080 测试端口暴露、目录索引暴露、安全响应头缺失、Server 版本信息泄露 | 76 | 中风险 |
+| `exp2` | 扩大端口范围后额外识别到开放 SSH 端口 | 81 | 高风险 |
+| `exp3` | 无目标演示服务，未发现风险项 | 0 | 低风险 |
+| `exp4` | 在实验一基础上新增 HTTPS 自签名证书风险 | 88 | 高风险 |
 
-## Regenerate the Demo Certificate
+## 报告说明
 
-The HTTPS demo requires a local self-signed certificate. Certificate files are intentionally ignored by Git because they include a private key. If you need to regenerate them, run:
+论文报告位于：
 
-```bash
-openssl req -x509 -newkey rsa:2048 -nodes -days 825 \
-  -keyout demo_certs/key.pem -out demo_certs/cert.pem \
-  -subj "/C=CN/ST=Beijing/L=Beijing/O=NormalTime Lab/CN=127.0.0.1" \
-  -addext "subjectAltName=IP:127.0.0.1"
-```
+- `report.pdf`：已编译的完整 PDF 报告
+- `report.tex`：LaTeX 源文件
 
-## Research Report
+报告内容包括研究背景、系统设计、核心代码实现、四组实验结果、风险展示、主流工具对比、预防措施、参考文献和附录。附录中补充了实验复现命令、结果文件对应关系、核心代码模块说明和评分规则说明。
 
-The full report is available as:
+## 安全声明
 
-- `report.pdf`: compiled report
-- `report.tex`: LaTeX source
-
-The report explains the system design, code implementation, experiment process, risk scoring model, comparison with mainstream security scanning tools, prevention measures, and appendices for reproducibility.
-
-## Notes
-
-This project is intended for controlled local security experiments and educational risk analysis. Do not scan systems without permission.
+本项目仅用于本地可控环境下的安全实验、课程作业和风险检测原型研究。请勿在未获得授权的情况下扫描他人主机、服务或网络资产。
