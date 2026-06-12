@@ -1,0 +1,21 @@
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+
+# LaTeX build artifacts
+*.aux
+*.fdb_latexmk
+*.fls
+report.log
+*.out
+*.synctex.gz
+*.toc
+*.xdv
+
+# Local font probing logs
+missfont.log
+
+# Demo certificates can be regenerated with the README command.
+demo_certs/*.pem

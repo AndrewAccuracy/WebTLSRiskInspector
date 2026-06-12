@@ -1,0 +1,126 @@
+{
+  "target": "127.0.0.1",
+  "ports": [
+    {
+      "port": 21,
+      "open": false,
+      "service": "FTP",
+      "risk_hint": "FTP 明文传输账号口令，存在被嗅探风险。"
+    },
+    {
+      "port": 22,
+      "open": true,
+      "service": "Unknown",
+      "risk_hint": "未知服务，请结合实际业务研判。"
+    },
+    {
+      "port": 23,
+      "open": false,
+      "service": "Telnet",
+      "risk_hint": "Telnet 明文传输，远程管理风险较高。"
+    },
+    {
+      "port": 80,
+      "open": false,
+      "service": "HTTP",
+      "risk_hint": "仅暴露 HTTP 可能导致流量明文传输。"
+    },
+    {
+      "port": 443,
+      "open": false,
+      "service": "HTTPS",
+      "risk_hint": "HTTPS 端口正常，但仍需检查证书与安全头。"
+    },
+    {
+      "port": 3306,
+      "open": false,
+      "service": "MySQL",
+      "risk_hint": "数据库端口直接暴露可能带来弱口令和越权访问风险。"
+    },
+    {
+      "port": 6379,
+      "open": false,
+      "service": "Redis",
+      "risk_hint": "Redis 端口若未鉴权直接暴露，风险极高。"
+    },
+    {
+      "port": 8080,
+      "open": true,
+      "service": "HTTP-Alt",
+      "risk_hint": "备用 Web 端口常用于测试服务，配置疏漏概率较高。"
+    }
+  ],
+  "findings": [
+    {
+      "title": "疑似目录索引暴露",
+      "severity": "high",
+      "score": 20,
+      "evidence": "端口 8080 页面内容包含 'Index of /'",
+      "recommendation": "关闭目录浏览功能，避免静态资源、日志或备份文件被遍历获取。"
+    },
+    {
+      "title": "开放端口 8080 暴露风险",
+      "severity": "medium",
+      "score": 10,
+      "evidence": "8080/HTTP-Alt 处于开放状态。备用 Web 端口常用于测试服务，配置疏漏概率较高。",
+      "recommendation": "确认端口是否必须对外开放；若非必要，应关闭或限制访问来源。"
+    },
+    {
+      "title": "缺少安全响应头 Strict-Transport-Security",
+      "severity": "medium",
+      "score": 10,
+      "evidence": "端口 8080 响应中未发现 Strict-Transport-Security",
+      "recommendation": "在 Web 服务或反向代理中补充 Strict-Transport-Security 配置。"
+    },
+    {
+      "title": "缺少安全响应头 Content-Security-Policy",
+      "severity": "medium",
+      "score": 10,
+      "evidence": "端口 8080 响应中未发现 Content-Security-Policy",
+      "recommendation": "在 Web 服务或反向代理中补充 Content-Security-Policy 配置。"
+    },
+    {
+      "title": "Server 版本信息暴露",
+      "severity": "medium",
+      "score": 8,
+      "evidence": "端口 8080 返回 Server 头: Apache/2.4.49",
+      "recommendation": "隐藏精确版本号，仅保留必要产品标识，降低被针对性攻击概率。"
+    },
+    {
+      "title": "缺少安全响应头 X-Frame-Options",
+      "severity": "medium",
+      "score": 8,
+      "evidence": "端口 8080 响应中未发现 X-Frame-Options",
+      "recommendation": "在 Web 服务或反向代理中补充 X-Frame-Options 配置。"
+    },
+    {
+      "title": "缺少安全响应头 X-Content-Type-Options",
+      "severity": "low",
+      "score": 6,
+      "evidence": "端口 8080 响应中未发现 X-Content-Type-Options",
+      "recommendation": "在 Web 服务或反向代理中补充 X-Content-Type-Options 配置。"
+    },
+    {
+      "title": "开放端口 22 暴露风险",
+      "severity": "medium",
+      "score": 5,
+      "evidence": "22/Unknown 处于开放状态。未知服务，请结合实际业务研判。",
+      "recommendation": "确认端口是否必须对外开放；若非必要，应关闭或限制访问来源。"
+    },
+    {
+      "title": "缺少安全响应头 Referrer-Policy",
+      "severity": "low",
+      "score": 4,
+      "evidence": "端口 8080 响应中未发现 Referrer-Policy",
+      "recommendation": "在 Web 服务或反向代理中补充 Referrer-Policy 配置。"
+    }
+  ],
+  "summary": {
+    "total_score": 81,
+    "risk_level": "高风险",
+    "high_count": 1,
+    "medium_count": 6,
+    "low_count": 2
+  },
+  "generated_at": 1779870717
+}

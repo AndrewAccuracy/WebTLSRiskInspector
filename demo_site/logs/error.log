@@ -1,0 +1,4 @@
+[Wed May 20 10:15:21.112233 2026] [autoindex:notice] [pid 1024] Autoindex enabled for / and /logs/
+[Wed May 20 10:15:23.001245 2026] [core:notice] [pid 1024] Server built: Apache/2.4.49
+[Wed May 20 10:15:24.389102 2026] [proxy:error] [pid 1024] backend pool api-prod-01:8088 returned intermittent 502
+[Wed May 20 10:15:25.983111 2026] [authz_core:warning] [pid 1024] configuration directory is accessible without IP restriction
