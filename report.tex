@@ -8,6 +8,7 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{xcolor}
+\usepackage{cite}
 \usepackage{xurl}
 \usepackage{hyperref}
 \usepackage{listings}
@@ -42,6 +43,10 @@
   citecolor=black
 }
 \urlstyle{same}
+
+\makeatletter
+\renewcommand{\@cite}[2]{\textsuperscript{\normalfont[{#1\if@tempswa , #2\fi}]}}
+\makeatother
 
 \setstretch{1.35}
 \setlength{\parindent}{2em}
