@@ -8,6 +8,7 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{xcolor}
+\usepackage{xurl}
 \usepackage{hyperref}
 \usepackage{listings}
 \usepackage{caption}
@@ -40,6 +41,7 @@
   urlcolor=blue,
   citecolor=black
 }
+\urlstyle{same}
 
 \setstretch{1.35}
 \setlength{\parindent}{2em}
@@ -102,9 +104,9 @@
 \end{center}
 
 {\CJKfamily{zhkai}
-随着网络服务规模的扩大和应用部署频率的提升，由基础安全配置疏漏引发的风险问题日益突出。开放测试端口、目录索引暴露、HTTP 安全响应头缺失、服务版本信息泄露以及 HTTPS 配置不规范等问题，虽然未必直接构成高复杂度漏洞，却往往是攻击者开展信息收集、漏洞匹配和定向攻击的前提条件。针对这一类高频、低门槛且易被忽视的安全隐患，本文设计并实现了一套本地网络资产与 Web 安全配置风险检测系统。系统以 Python 为实现语言，采用“端口探测、协议分析、规则评分、报告生成”的整体思路，能够对目标主机开放端口、HTTP 安全头、目录浏览暴露、服务版本信息以及 HTTPS 基础安全状态进行自动化检测，并输出结构化结果和面向文档展示的风险报告。
+随着网络服务部署频率的提升，开放测试端口、目录索引暴露、HTTP 安全响应头缺失、服务版本信息泄露和 HTTPS 配置不规范等基础安全问题，逐渐成为攻击者开展信息收集和后续利用的重要入口。针对这类高频且易被忽视的配置风险，本文设计并实现了一套本地网络资产与 Web 安全配置风险检测系统。系统以 Python 标准库为主要实现基础，围绕“端口探测、协议分析、规则评分、报告生成”构建检测流程，能够对目标主机开放端口、HTTP 安全头、目录浏览暴露、服务版本信息以及 TLS 证书可信性进行自动化检测，并输出结构化结果和风险报告。
 
-在实验部分，本文构建了本地弱安全配置演示环境，并以 \texttt{127.0.0.1} 为目标执行扫描。基础实验结果表明，系统成功识别出 8080 测试端口暴露、目录索引暴露、Server 版本信息泄露以及多项安全响应头缺失等典型问题，综合风险评分为 76，整体等级判定为中风险。在此基础上，本文进一步搭建了基于本地自签名证书的 HTTPS 演示服务，对系统的 TLS 检测模块进行了专项验证，真实复现了证书不受信任（自签名）这一常见 HTTPS 配置风险，使代码实现、执行结果与风险展示三个环节实现了完整闭环。为进一步说明系统定位，本文还从端口检测、HTTP 安全头检测、风险评分、整改建议和代码透明性等维度，将本系统与 Nmap、Nessus、OWASP ZAP、nikto 等主流安全扫描工具进行对比，突出该系统在轻量化实现、低依赖运行和可解释输出方面的差异化价值。同时，为保证代码实现、实验输出与报告材料能够统一查阅和复现，本文已将项目整理并推送至 GitHub 仓库 \href{https://github.com/AndrewAccuracy/WebTLSRiskInspector}{AndrewAccuracy/WebTLSRiskInspector}。
+实验部分构建了本地弱安全配置演示环境，并围绕基础扫描、扩大端口范围、无服务基线扫描和 HTTPS 自签名证书检测开展四组验证。结果表明，系统能够识别 8080 测试端口暴露、目录索引暴露、Server 版本信息泄露、多项安全响应头缺失以及证书不受信任等问题，典型场景下综合风险评分由 76 分上升至 88 分，风险等级由中风险提升为高风险。本文还将系统与 Nmap、Nessus、OWASP ZAP、nikto 等工具进行对比，以说明其在轻量化实现、低依赖运行和可解释输出方面的定位。为便于复现，项目代码、实验输出与报告材料已整理并推送至 GitHub 仓库 \href{https://github.com/AndrewAccuracy/WebTLSRiskInspector}{AndrewAccuracy/WebTLSRiskInspector}。
 
 \noindent 关键词：网络信息安全；风险检测；Web 安全配置；端口扫描；自动化巡检
 }
@@ -1427,148 +1429,148 @@ nikto 是专注于 Web 服务器的开源扫描工具，能够检测过时软件
 \begin{thebibliography}{99}
 
 \bibitem{owasp-top10}
-OWASP Foundation. \textit{OWASP Top 10: The Ten Most Critical Web Application Security Risks}. OWASP Project.
+OWASP Foundation. \textit{OWASP Top 10: The Ten Most Critical Web Application Security Risks}. OWASP Project. URL: \url{https://owasp.org/www-project-top-ten/}.
 
 \bibitem{rfc6797}
-Hodges J, Jackson C, Barth A. \textit{HTTP Strict Transport Security (HSTS)}. RFC 6797.
+Hodges J, Jackson C, Barth A. \textit{HTTP Strict Transport Security (HSTS)}. RFC 6797. URL: \url{https://www.rfc-editor.org/rfc/rfc6797}.
 
 \bibitem{csp}
-West M, et al. \textit{Content Security Policy Level 3}. W3C Working Draft.
+West M, et al. \textit{Content Security Policy Level 3}. W3C Working Draft. URL: \url{https://www.w3.org/TR/CSP3/}.
 
 \bibitem{rfc9110}
-Fielding R, Nottingham M, Reschke J. \textit{HTTP Semantics}. RFC 9110.
+Fielding R, Nottingham M, Reschke J. \textit{HTTP Semantics}. RFC 9110. URL: \url{https://www.rfc-editor.org/rfc/rfc9110}.
 
 \bibitem{rfc8446}
-Rescorla E. \textit{The Transport Layer Security (TLS) Protocol Version 1.3}. RFC 8446.
+Rescorla E. \textit{The Transport Layer Security (TLS) Protocol Version 1.3}. RFC 8446. URL: \url{https://www.rfc-editor.org/rfc/rfc8446}.
 
 \bibitem{nist}
-National Institute of Standards and Technology. \textit{Guide to General Server Security}. NIST Special Publication.
+Scarfone K, Jansen W, Tracy M. \textit{Guide to General Server Security}. NIST Special Publication 800-123. URL: \url{https://csrc.nist.gov/publications/detail/sp/800-123/final}.
 
 \bibitem{nist-vuln}
-Scarfone K, Mell P. \textit{Guide to Vulnerability Scanning}. NIST Special Publication 800-115.
+Scarfone K, Souppaya M, Cody A, Orebaugh A. \textit{Technical Guide to Information Security Testing and Assessment}. NIST Special Publication 800-115. URL: \url{https://csrc.nist.gov/publications/detail/sp/800-115/final}.
 
 \bibitem{nist-csf}
-National Institute of Standards and Technology. \textit{Framework for Improving Critical Infrastructure Cybersecurity}. NIST CSF.
+National Institute of Standards and Technology. \textit{Framework for Improving Critical Infrastructure Cybersecurity}. NIST Cybersecurity Framework. URL: \url{https://www.nist.gov/cyberframework}.
 
 \bibitem{wstg}
-OWASP Foundation. \textit{Web Security Testing Guide}. OWASP WSTG.
+OWASP Foundation. \textit{Web Security Testing Guide}. OWASP WSTG. URL: \url{https://owasp.org/www-project-web-security-testing-guide/}.
 
 \bibitem{nessus-guide}
-Tenable. \textit{Vulnerability Management Best Practices Guide}. Tenable Documentation.
+Tenable. \textit{Vulnerability Management Best Practices Guide}. Tenable Documentation. URL: \url{https://www.tenable.com/cybersecurity-guide/principles/vulnerability-management}.
 
 \bibitem{nmap-book}
-Lyon G F. \textit{Nmap Network Scanning}. Insecure.Com LLC.
+Lyon G F. \textit{Nmap Network Scanning}. Insecure.Com LLC. URL: \url{https://nmap.org/book/}.
 
 \bibitem{shodan}
-Matherly J. \textit{Shodan: The Search Engine for the Internet of Things}. Shodan Documentation.
+Matherly J. \textit{Shodan: The Search Engine for the Internet of Things}. Shodan Documentation. URL: \url{https://www.shodan.io/}.
 
 \bibitem{nist-server}
-Kuhn D R, et al. \textit{Security Considerations in the System Development Life Cycle}. NIST Guidance.
+Kissel R, Stine K, Scholl M, Rossman H, Fahlsing J, Gulick J. \textit{Security Considerations in the System Development Life Cycle}. NIST Special Publication 800-64 Rev. 2. URL: \url{https://csrc.nist.gov/publications/detail/sp/800-64/rev-2/final}.
 
 \bibitem{owasp-asvs}
-OWASP Foundation. \textit{Application Security Verification Standard 4.0}. OWASP ASVS.
+OWASP Foundation. \textit{Application Security Verification Standard}. OWASP ASVS. URL: \url{https://owasp.org/www-project-application-security-verification-standard/}.
 
 \bibitem{cis-controls}
-Center for Internet Security. \textit{CIS Critical Security Controls}. CIS.
+Center for Internet Security. \textit{CIS Critical Security Controls}. CIS. URL: \url{https://www.cisecurity.org/controls}.
 
 \bibitem{mitre-attck}
-MITRE Corporation. \textit{MITRE ATT\&CK Knowledge Base}. MITRE.
+MITRE Corporation. \textit{MITRE ATT\&CK Knowledge Base}. MITRE. URL: \url{https://attack.mitre.org/}.
 
 \bibitem{devsecops}
-Sharma A, et al. \textit{DevSecOps: Integrating Security into DevOps}. Industry Whitepaper.
+OWASP Foundation. \textit{DevSecOps Guideline}. OWASP Project. URL: \url{https://owasp.org/www-project-devsecops-guideline/}.
 
 \bibitem{ssdlc}
-Microsoft. \textit{Security Development Lifecycle}. Microsoft SDL Documentation.
+Microsoft. \textit{Security Development Lifecycle}. Microsoft SDL Documentation. URL: \url{https://www.microsoft.com/en-us/securityengineering/sdl}.
 
 \bibitem{secure-by-design}
-CISA. \textit{Shifting the Balance of Cybersecurity Risk: Principles and Approaches for Secure by Design Software}. CISA Guidance.
+CISA. \textit{Shifting the Balance of Cybersecurity Risk: Principles and Approaches for Secure by Design Software}. CISA Guidance. URL: \url{https://www.cisa.gov/resources-tools/resources/secure-by-design}.
 
 \bibitem{nist-scrm}
-National Institute of Standards and Technology. \textit{Cybersecurity Supply Chain Risk Management Practices for Systems and Organizations}. NIST SP 800-161.
+National Institute of Standards and Technology. \textit{Cybersecurity Supply Chain Risk Management Practices for Systems and Organizations}. NIST SP 800-161 Rev. 1. URL: \url{https://csrc.nist.gov/publications/detail/sp/800-161/rev-1/final}.
 
 \bibitem{owasp-cheatsheet}
-OWASP Foundation. \textit{OWASP Cheat Sheet Series}. OWASP Project.
+OWASP Foundation. \textit{OWASP Cheat Sheet Series}. OWASP Project. URL: \url{https://cheatsheetseries.owasp.org/}.
 
 \bibitem{nist-80053}
-National Institute of Standards and Technology. \textit{Security and Privacy Controls for Information Systems and Organizations}. NIST SP 800-53.
+National Institute of Standards and Technology. \textit{Security and Privacy Controls for Information Systems and Organizations}. NIST SP 800-53 Rev. 5. URL: \url{https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final}.
 
 \bibitem{cis-benchmarks}
-Center for Internet Security. \textit{CIS Benchmarks}. CIS Benchmark Series.
+Center for Internet Security. \textit{CIS Benchmarks}. CIS Benchmark Series. URL: \url{https://www.cisecurity.org/cis-benchmarks}.
 
 \bibitem{ops-report}
-Google Cloud. \textit{Operations and Reliability Best Practices}. Google Cloud Architecture Center.
+Google Cloud. \textit{Operational Excellence}. Google Cloud Architecture Framework. URL: \url{https://cloud.google.com/architecture/framework/operational-excellence}.
 
 \bibitem{websec-book}
-Stuttard D, Pinto M. \textit{The Web Application Hacker's Handbook}. Wiley.
+Stuttard D, Pinto M. \textit{The Web Application Hacker's Handbook}. Wiley. URL: \url{https://portswigger.net/web-security/web-application-hackers-handbook}.
 
 \bibitem{practical-monitoring}
-Turnbull J. \textit{The Art of Monitoring}. James Turnbull.
+Turnbull J. \textit{The Art of Monitoring}. James Turnbull. URL: \url{https://www.jamesturnbull.net/books/the-art-of-monitoring/}.
 
 \bibitem{nuclei}
-ProjectDiscovery. \textit{Nuclei Documentation}. ProjectDiscovery.
+ProjectDiscovery. \textit{Nuclei Documentation}. ProjectDiscovery. URL: \url{https://docs.projectdiscovery.io/tools/nuclei/overview}.
 
 \bibitem{openvas}
-Greenbone Networks. \textit{OpenVAS and Greenbone Vulnerability Management Documentation}. Greenbone.
+Greenbone Networks. \textit{OpenVAS and Greenbone Vulnerability Management Documentation}. Greenbone. URL: \url{https://greenbone.github.io/docs/latest/}.
 
 \bibitem{security-automation}
 O'Connor T. \textit{Security Automation with Python}. Technical Reference.
 
 \bibitem{software-security}
-McGraw G. \textit{Software Security: Building Security In}. Addison-Wesley.
+McGraw G. \textit{Software Security: Building Security In}. Addison-Wesley. URL: \url{https://www.informit.com/store/software-security-building-security-in-9780321356703}.
 
 \bibitem{secure-coding}
-Seacord R C. \textit{Secure Coding in C and C++}. Addison-Wesley.
+Seacord R C. \textit{Secure Coding in C and C++}. Addison-Wesley. URL: \url{https://www.informit.com/store/secure-coding-in-c-and-c-plus-plus-9780321822130}.
 
 \bibitem{threat-modeling}
-Shostack A. \textit{Threat Modeling: Designing for Security}. Wiley.
+Shostack A. \textit{Threat Modeling: Designing for Security}. Wiley. URL: \url{https://shostack.org/books/threat-modeling-book}.
 
 \bibitem{redis-security}
-Redis Labs. \textit{Redis Security Documentation}. Redis Official Docs.
+Redis. \textit{Redis Security Documentation}. Redis Official Docs. URL: \url{https://redis.io/docs/latest/operate/oss_and_stack/management/security/}.
 
 \bibitem{mysql-security}
-Oracle. \textit{MySQL Security Guidelines}. MySQL Reference Manual.
+Oracle. \textit{MySQL Security Guidelines}. MySQL Reference Manual. URL: \url{https://dev.mysql.com/doc/refman/8.4/en/security.html}.
 
 \bibitem{xcto}
-IETF. \textit{X-Content-Type-Options Header Field}. Technical Discussion Note.
+Mozilla. \textit{X-Content-Type-Options}. MDN Web Docs. URL: \url{https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Content-Type-Options}.
 
 \bibitem{referrer-policy}
-W3C. \textit{Referrer Policy}. W3C Recommendation.
+W3C. \textit{Referrer Policy}. W3C Recommendation. URL: \url{https://www.w3.org/TR/referrer-policy/}.
 
 \bibitem{clickjacking}
-Rydstedt G, et al. \textit{Busting Frame Busting: A Study of Clickjacking Vulnerabilities}. IEEE Symposium Paper.
+Rydstedt G, Bursztein E, Boneh D, Jackson C. \textit{Busting Frame Busting: A Study of Clickjacking Vulnerabilities}. IEEE Symposium Paper. URL: \url{https://seclab.stanford.edu/websec/framebusting/framebust.pdf}.
 
 \bibitem{tls-bcp}
-Sheffer Y, et al. \textit{Recommendations for Secure Use of Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS)}. BCP 195.
+Sheffer Y, Saint-Andre P, Fossati T. \textit{Recommendations for Secure Use of Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS)}. RFC 9325, BCP 195. URL: \url{https://www.rfc-editor.org/rfc/rfc9325}.
 
 \bibitem{mozilla-tls}
-Mozilla. \textit{Server Side TLS Guidelines}. Mozilla Wiki.
+Mozilla. \textit{Server Side TLS Guidelines}. Mozilla Wiki. URL: \url{https://wiki.mozilla.org/Security/Server_Side_TLS}.
 
 \bibitem{owasp-tls}
-OWASP Foundation. \textit{Transport Layer Protection Cheat Sheet}. OWASP Cheat Sheet.
+OWASP Foundation. \textit{Transport Layer Security Cheat Sheet}. OWASP Cheat Sheet. URL: \url{https://cheatsheetseries.owasp.org/cheatsheets/Transport_Layer_Security_Cheat_Sheet.html}.
 
 \bibitem{apache-security}
-Apache Software Foundation. \textit{Apache HTTP Server Security Tips}. Apache Documentation.
+Apache Software Foundation. \textit{Apache HTTP Server Security Tips}. Apache Documentation. URL: \url{https://httpd.apache.org/docs/current/misc/security_tips.html}.
 
 \bibitem{nginx-security}
-NGINX. \textit{Security Controls and Hardening Guides}. NGINX Documentation.
+NGINX. \textit{Security Controls and Hardening Guides}. NGINX Documentation. URL: \url{https://docs.nginx.com/nginx/admin-guide/security-controls/}.
 
 \bibitem{nist-crypto}
-National Institute of Standards and Technology. \textit{Recommendation for Key Management}. NIST SP 800-57.
+National Institute of Standards and Technology. \textit{Recommendation for Key Management}. NIST SP 800-57 Part 1 Rev. 5. URL: \url{https://csrc.nist.gov/publications/detail/sp/800-57-part-1/rev-5/final}.
 
 \bibitem{cert-guide}
-CA/Browser Forum. \textit{Baseline Requirements for the Issuance and Management of Publicly-Trusted Certificates}. CA/B Forum.
+CA/Browser Forum. \textit{Baseline Requirements for the Issuance and Management of Publicly-Trusted Certificates}. CA/B Forum. URL: \url{https://cabforum.org/working-groups/server/baseline-requirements/}.
 
 \bibitem{software-engineering}
-Sommerville I. \textit{Software Engineering}. Pearson.
+Sommerville I. \textit{Software Engineering}. Pearson. URL: \url{https://www.pearson.com/en-us/subject-catalog/p/software-engineering/P200000003638}.
 
 \bibitem{monitoring-book}
-Beyer B, Jones C, Petoff J, Murphy N R. \textit{Site Reliability Engineering}. O'Reilly Media.
+Beyer B, Jones C, Petoff J, Murphy N R. \textit{Site Reliability Engineering}. O'Reilly Media. URL: \url{https://sre.google/sre-book/table-of-contents/}.
 
 \bibitem{secure-design}
-Saltzer J H, Schroeder M D. \textit{The Protection of Information in Computer Systems}. Proceedings Paper.
+Saltzer J H, Schroeder M D. \textit{The Protection of Information in Computer Systems}. Proceedings Paper. URL: \url{https://web.mit.edu/Saltzer/www/publications/protection/}.
 
 \bibitem{platform-engineering}
-Hightower K, Burns B, Beda J. \textit{Kubernetes: Up and Running}. O'Reilly Media.
+Hightower K, Burns B, Beda J. \textit{Kubernetes: Up and Running}. O'Reilly Media. URL: \url{https://www.oreilly.com/library/view/kubernetes-up-and/9781492046523/}.
 
 \end{thebibliography}
 
